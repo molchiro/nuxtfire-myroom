@@ -21,10 +21,9 @@ export default {
     const { data } = await axios.get(url);
 
     const arrangeTemp = function(temp) {
-      if (temp === null){return "データ無し";}
-      return temp.celsius + "℃"
+      return temp ? temp.celsius + "℃" : "データ無し";
     }
-    
+
     return {
       title: data.title,
       today: {
