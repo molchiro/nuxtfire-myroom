@@ -19,8 +19,9 @@
     async asyncData () {
       const db = firebase.database();
       const ref = db.ref("temp-humid-sensor").limitToLast(50);
-      const snapshot = await ref.once('value');
-      return { sensorData: snapshot.val() };
+      ref.on('value', await function( snapshot ) {
+        return { sensorData: snapshot.val() };
+      });
     },
     mounted () {
       const config = require("../assets/config.json");
