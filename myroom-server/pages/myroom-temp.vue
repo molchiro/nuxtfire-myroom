@@ -16,9 +16,9 @@
 <script>
   import firebase from 'firebase'
   export default {
-    async data () {
+    async asyncData () {
       const db = firebase.database();
-      const ref = db.ref("temp-humid-sensor");
+      const ref = db.ref("temp-humid-sensor").limitToLast(50);
       const snapshot = await ref.once('value');
       return { sensorData: snapshot.val() };
     },
