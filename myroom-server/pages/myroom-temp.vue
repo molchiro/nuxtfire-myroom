@@ -1,7 +1,6 @@
 <template>
   <section class="container">
     <div>
-      <app-logo/>
       <h1 class="title">
         roooooooom
       </h1>
@@ -16,17 +15,21 @@
 <script>
   import firebase from 'firebase'
   export default {
-    async asyncData () {
-      const db = firebase.database();
-      const ref = db.ref("temp-humid-sensor").limitToLast(50);
-      ref.on('value', await function( snapshot ) {
-        return { sensorData: snapshot.val() };
-      });
+    data () {
+      return {
+        sensorData: null
+      };
     },
     mounted () {
       const config = require("../assets/config.json");
       firebase.initializeApp(config);
-
+      const db = firebase.database();
+      const ref = db.ref("temp-humid-sensor").limitToLast(50);
+      ref.on('value', ( snapshot ) => {
+        console.log("aaaa")
+        console.log(snapshot.val())
+        this.sensorData = snapshot.val();
+      })
     }
   }
 
