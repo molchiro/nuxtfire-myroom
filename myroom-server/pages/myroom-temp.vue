@@ -1,34 +1,36 @@
 <template>
   <section class="container">
-    <div>
-      <h1 class="title">
-        roooooooom
-      </h1>
-      <h2 class="subtitle">
-        Nuxt.js project
-      </h2>
-    </div>
-    <p>{{sensorData}}</p>
+    <li v-for="item in sensorData" v-bind:key="item.timestamp">
+      {{ item.timestamp }} 室温{{ item.tmp}}℃ 湿度{{ item.hmd }}%
+    </li>
   </section>
 </template>
 
 <script>
   import firebase from 'firebase'
+
+  const sensorDataParser = function (sensorData) {
+    const result = [];
+    for (let key in sensorData) {
+      // HACK:時系列で入ってくる確証はない？ちゃんと降順ソートすべき
+      result.unshift(sensorData[key])
+    }
+    return result;
+  }
+
   export default {
     data () {
       return {
-        sensorData: null
+        sensorData: []
       };
     },
     mounted () {
       const config = require("../assets/config.json");
       firebase.initializeApp(config);
       const db = firebase.database();
-      const ref = db.ref("temp-humid-sensor").limitToLast(50);
+      const ref = db.ref("temp-humid-sensor").limitToLast(100);
       ref.on('value', ( snapshot ) => {
-        console.log("aaaa")
-        console.log(snapshot.val())
-        this.sensorData = snapshot.val();
+        this.sensorData = sensorDataParser(snapshot.val());
       })
     }
   }
@@ -36,32 +38,5 @@
 </script>
 
 <style>
-.container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
 
-.title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
 </style>
