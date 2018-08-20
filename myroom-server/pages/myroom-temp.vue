@@ -1,36 +1,56 @@
 <template>
-  <section class="container">
-    <li v-for="item in sensorData" v-bind:key="item.timestamp">
-      {{ item.timestamp }} 室温{{ item.tmp}}℃ 湿度{{ item.hmd }}%
-    </li>
-  </section>
+  <div>
+    <line-chart v-if="showLine" :data="chartData" :options="options"/>
+  </div>
 </template>
 
 <script>
   import firebase from 'firebase'
 
-  const sensorDataParser = function (sensorData) {
-    const result = [];
+  const ParseSensorData2ChartData = function (sensorData) {
+    const x = []
+    const y = []
     for (let key in sensorData) {
       // HACK:時系列で入ってくる確証はない？ちゃんと降順ソートすべき
-      result.unshift(sensorData[key])
+      x.unshift(sensorData[key]["timestamp"]);
+      y.unshift(sensorData[key]["tmp"])
     }
-    return result;
+    const chartData = {
+      labels: x,
+      datasets: [
+        {
+          label: 'temperature',
+          fillColor: "rgba(220,220,220,0.2)",
+          strokeColor: "rgba(220,220,220,1)",
+          pointColor: "rgba(220,220,220,1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(220,220,220,1)",
+          data: y,
+        }
+      ]
+    };
+    return chartData;
   }
 
   export default {
     data () {
       return {
-        sensorData: []
+        showLine: false,
+        chartData: {},
+        options: {}
       };
     },
     mounted () {
+      this.showLine = true // showLine will only be set to true on the client. This keeps the DOM-tree in sync.
+
       const config = require("../assets/config.json");
       firebase.initializeApp(config);
       const db = firebase.database();
       const ref = db.ref("temp-humid-sensor").limitToLast(100);
       ref.on('value', ( snapshot ) => {
-        this.sensorData = sensorDataParser(snapshot.val());
+        this.chartData = ParseSensorData2ChartData(snapshot.val());
+        console.log(this.chartData)
       })
     }
   }

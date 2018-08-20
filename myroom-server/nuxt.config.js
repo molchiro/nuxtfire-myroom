@@ -20,6 +20,9 @@ module.exports = {
   /*
   ** Build configuration
   */
+  plugins: [
+  { src: '~plugins/vue-chartjs.js', ssr: false },
+],
   build: {
     /*
     ** Run ESLint on save
@@ -36,4 +39,3 @@ module.exports = {
     }
   }
 }
-
