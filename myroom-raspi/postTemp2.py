@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import dht11
 import datetime
 import RPi.GPIO as GPIO
