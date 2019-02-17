@@ -2,6 +2,7 @@
 
 import dht11
 import datetime
+from pytz import timezone
 import RPi.GPIO as GPIO
 import firebase_admin
 from firebase_admin import credentials
@@ -22,7 +23,7 @@ db = firestore.client()
 
 doc_ref = db.collection(u'temp-humid-sensor')
 doc_ref.add({
-    u'timestamp': datetime.datetime.now(),
+    u'timestamp': datetime.datetime.now(timezone('Asia/Tokyo')),
     u'tmp': dht11_read_data.temperature,
     u'hmd': dht11_read_data.humidity
     })
