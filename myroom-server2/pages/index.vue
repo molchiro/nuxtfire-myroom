@@ -4,8 +4,8 @@
    v-sparkline(
       :value="tmps"
       :labels="timestamps"
-      line-width="1"
-      label-size="1"
+      line-width="0.4"
+      padding="16"
     )
 </template>
 
@@ -21,7 +21,9 @@ export default {
       return this.tempHumidSensor.map(x => x.hmd)
     },
     timestamps() {
-      return this.tempHumidSensor.map(x => x.timestamp)
+      return this.tempHumidSensor.map(
+        (el, index) => (index % 144 == 0 ? el.timestamp.toDate() : ' ')
+      )
     },
   },
   mounted() {
