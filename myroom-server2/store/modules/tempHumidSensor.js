@@ -23,7 +23,7 @@ export default {
     startListener({ commit }) {
       commit('initialize')
       this.unsubscribe = sensorsRef
-        .orderBy('timestamp', 'asc')
+        .orderBy('timestamp', 'desc')
         .limit(289)
         .onSnapshot(snapshot => {
           snapshot.docChanges().forEach(change => {
