@@ -11,6 +11,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import format from 'date-fns/format'
+
 export default {
   computed: {
     ...mapState('tempHumidSensor', ['tempHumidSensor']),
@@ -22,7 +24,8 @@ export default {
     },
     timestamps() {
       return this.tempHumidSensor.map(
-        (el, index) => (index % 144 == 0 ? el.timestamp.toDate() : ' ')
+        (el, index) =>
+          index % 36 == 0 ? this.formatTimestamp(el.timestamp.toDate()) : ' '
       )
     },
   },
@@ -31,6 +34,11 @@ export default {
   },
   beforeDestroy() {
     this.$store.dispatch('tempHumidSensor/stopListener')
+  },
+  methods: {
+    formatTimestamp(timestamp) {
+      return format(timestamp, 'HH:mm')
+    },
   },
 }
 </script>
