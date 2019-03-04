@@ -1,19 +1,21 @@
 <template lang="pug">
   div
    h1 室温グラフ
-   v-sparkline(
+   graphVuetify(
       :value="tmps"
       :labels="timestamps"
-      line-width="0.4"
-      padding="16"
     )
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import format from 'date-fns/format'
+import graphVuetify from '@/components/graphVuetify'
 
 export default {
+  components: {
+    graphVuetify,
+  },
   computed: {
     ...mapState('tempHumidSensor', ['tempHumidSensor']),
     tmps() {
