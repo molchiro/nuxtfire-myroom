@@ -15,8 +15,11 @@ export default {
     initialize(state) {
       state.tempHumidSensor = []
     },
-    addData(state, sensorData) {
+    pushAndLimit(state, sensorData) {
       state.tempHumidSensor.push(sensorData)
+      if (state.tempHumidSensor.length > 289) {
+        state.tempHumidSensor.splice(0, state.tempHumidSensor.length - 289)
+      }
     },
   },
   actions: {
@@ -30,7 +33,7 @@ export default {
             if (change.type === 'added') {
               const data = change.doc.data()
               const id = change.doc.id
-              commit('addData', { ...data, id })
+              commit('pushAndLimit', { ...data, id })
             }
           })
         })
